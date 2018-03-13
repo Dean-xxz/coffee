@@ -9,6 +9,11 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
+venv/
+migrations/
+static/
+media/
+
 build/
 develop-eggs/
 dist/
@@ -33,6 +38,7 @@ wheels/
 
 # Installer logs
 pip-log.txt
+db.sqllite3
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
