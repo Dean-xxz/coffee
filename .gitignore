@@ -10,6 +10,7 @@ __pycache__/
 .Python
 env/
 venv/
+<<<<<<< HEAD
 build/
 develop-eggs/
 dist/
@@ -17,6 +18,15 @@ static/
 media/
 migrations/
 db.sqllite3
+=======
+migrations/
+static/
+media/
+
+build/
+develop-eggs/
+dist/
+>>>>>>> f9a8ad309bc3de0b7293352e6f865cceca044811
 downloads/
 eggs/
 .eggs/
@@ -38,6 +48,10 @@ wheels/
 
 # Installer logs
 pip-log.txt
+<<<<<<< HEAD
+=======
+db.sqllite3
+>>>>>>> f9a8ad309bc3de0b7293352e6f865cceca044811
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
