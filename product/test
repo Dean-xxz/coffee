@@ -1,0 +1,46 @@
+server {
+    server_name localhost;
+    listen 80;
+
+    location / {
+        proxy_pass http://127.0.0.1:3031;
+    }
+    location /static {
+        root /home/youdian/youdian/backend_youdian/youdian/static/;
+        expires 5h;
+    }
+    location /media {
+        root /home/youdian/youdian/backend_youdian/youdian/media/;
+        expires 1d;
+    }
+    location /static/ {
+        alias /home/youdian/youdian/backend_youdian/youdian/static/;
+    }
+
+}
+
+
+
+server {
+        listen 80;
+        client_max_body_size 10M;
+        server_name www.youdianhome.com youdianhome.com;
+
+        root /home/youdian/youdian/frontend_youdian;
+        autoindex on;
+        index index.html;
+        error_page 404 = /404.html;
+
+        proxy_set_header Connection '';
+        proxy_http_version 1.1;
+        chunked_transfer_encoding off;
+        proxy_buffering off;
+        proxy_cache off;
+
+        location / {
+                try_files $uri $uri/ $uri.html =404;
+        }
+}
+
+
+    include sites/*.conf;
