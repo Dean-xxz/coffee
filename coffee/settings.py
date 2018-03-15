@@ -25,12 +25,13 @@ SECRET_KEY = 'yzc#^ziyaqw@8)9%3b71bd&0_j818vyn%(x3g0@nhtaa#_q^hn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'coffee.apps.SuitConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,12 +81,28 @@ WSGI_APPLICATION = 'coffee.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+#}
+
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+        'default': {
+            'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': 'coffee',                      # Or path to database file if using sqlite3.
+            'USER': 'root',                      # Not used with sqlite3.
+            'PASSWORD': 'xiaoxiaozhi',                  # Not used with sqlite3.
+            'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
+            'OPTIONS': {
+                "init_command": "SET storage_engine=INNODB;",
+                }
+            }
+        }
+
 
 
 # Password validation
@@ -116,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -129,9 +146,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,'static/')
-
-MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
-
+STATIC_ROOT = os.path.join(BASE_DIR,'static')
+#STATIC_ROOT = '/home/coffee/coffee/static/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+#MEDIA_ROOT = '/home/coffee/coffee/media/'
 MEDIA_URL = '/media/'
-# MEDIA_URL = '/uploader/'

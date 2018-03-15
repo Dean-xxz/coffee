@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.conf.urls import url,include
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -9,4 +11,4 @@ urlpatterns = [
     url(r'^formula/', include('formula.urls', namespace="formula")),  # 配方模块接口url
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
 
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,9 @@
+configparser==3.5.0
+Django==1.9.5
+django-ckeditor==5.4.0
+django-js-asset==1.0.0
+django-suit==2.0a1
+gunicorn==19.7.1
+Pillow==5.0.0
+PyMySQL==0.8.0
+Werkzeug==0.14.1
