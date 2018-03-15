@@ -26,13 +26,22 @@ class ProductListAPI(AbstractAPI):
         Product_list = Product.objects.filter(is_active=True,is_terminal=True)
         data = [o.get_json() for o in Product_list]
         for i in data:
-            item_id = i['items']
-            item_detail = Item.objects.get(pk = item_id)
-            item_detail = item_detail.get_json()
-            category_id = item_detail['category']
-            category = Category.objects.get(pk = category_id)
-            item_detail['category'] = category.title
-            i['item'] = item_detail
+            item_ids = i['items']
+            i['item_info'] = []
+            for j in item_ids:
+                item_detail = Item.objects.get(pk = j)
+                item_detail = item_detail.get_json()
+                item_detail.pop('update_time')
+                item_detail.pop('create_time')
+                item_detail.pop('is_active')
+                category_id = item_detail['category']
+                category = Category.objects.get(pk = category_id)
+                item_detail['category'] = category.title
+                i['item_info'].append(item_detail)
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+            i.pop('items')
 
         data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
         return data

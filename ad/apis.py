@@ -20,8 +20,11 @@ class AdListAPI(AbstractAPI):
 
     def access_db(self, kwarg):
         ad_list = Advertisement.objects.filter(is_active=True)
-        data = [o.get_json for o in ad_list]
-
+        data = [o.get_json() for o in ad_list]
+        for i in data:
+            i.pop('is_active')
+            i.pop('update_time')
+            i.pop('create_time')
         return data
 
     def format_data(self, data):

@@ -12,3 +12,5 @@ urlpatterns = [
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

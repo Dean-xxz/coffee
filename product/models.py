@@ -14,7 +14,7 @@ class Category(BaseModel):
     """
     title = models.CharField(max_length=128, verbose_name="产品分类标题")
     descp = models.CharField(max_length=1024,verbose_name="分类描述",null=True,blank=True)
-    image = models.ImageField(upload_to="/product/category/image/",verbose_name="产品分类介绍图片",null=True,blank=True)
+    image = models.ImageField(upload_to="media/product/category/image/",verbose_name="产品分类介绍图片",null=True,blank=True)
     order = models.PositiveSmallIntegerField(verbose_name="排序",default=0,help_text="在列表中的顺序")
 
     class Meta:
@@ -44,7 +44,7 @@ class Item(BaseModel):
                                  verbose_name = "所属产品分类",
                                  related_name = "categorys")
     descp = models.CharField(max_length=1024,verbose_name="商品描述",null=True,blank=True)
-    image = models.ImageField(upload_to="/product/item/image/",verbose_name="商品图片",null=True,blank=True)
+    image = models.ImageField(upload_to="media/product/item/image/",verbose_name="商品图片",null=True,blank=True)
     order = models.PositiveSmallIntegerField(verbose_name="排序",default=0,help_text="在列表中的顺序")
 
 
@@ -76,8 +76,8 @@ class Product(BaseModel):
     """
     title = models.CharField(max_length=128, verbose_name="产品标题")
     descp = models.CharField(max_length=1024,verbose_name="产品描述",null=True,blank=True)
-    big_image = models.ImageField(upload_to="/product/product/image/",verbose_name="产品大图",help_text="尺寸：260px*260px",null=True,blank=True)
-    small_image = models.ImageField(upload_to="/product/product/small_img/",verbose_name="产品小图",help_text="尺寸：162px*162px",null=True,blank=True)
+    big_image = models.ImageField(upload_to="media/product/product/image/",verbose_name="产品大图",help_text="尺寸：260px*260px",null=True,blank=True)
+    small_image = models.ImageField(upload_to="media/product/product/small_img/",verbose_name="产品小图",help_text="尺寸：162px*162px",null=True,blank=True)
     items = models.ManyToManyField("Item",verbose_name="商品条目",help_text="请选择该商品包含得产品内容")
     price = models.DecimalField(max_digits=10 ,decimal_places =2,verbose_name="产品价格")
     vip_price = models.DecimalField(max_digits=10,decimal_places=2,verbose_name="产品优惠价格")
