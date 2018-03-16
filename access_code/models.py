@@ -23,7 +23,7 @@ class Access_Code(BaseModel):
 
 
     def __str__(self):
-        return self.code,self.status
+        return self.code
 
     def get_json(self):
         serials = serializers.serialize("json", [self])

@@ -9,6 +9,7 @@ from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
 
 from .models import Formula,Container
+from product.models import Item
 
 # 配方查询接口
 
@@ -27,7 +28,15 @@ class FormulaQueryAPI(AbstractAPI):
             container_id = i['container']
             container = Container.objects.get(pk=container_id)
             container_name = container.title
+            item = Item.objects.get(pk=item_id)
+            item_title = item.title
+            i['item_title'] = item_title
             i['container_name'] = container_name
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+            i.pop('remarks')
+            i.pop('id')
         return data
 
     def format_data(self, data):

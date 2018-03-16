@@ -42,7 +42,7 @@ class Formula(BaseModel):
     item = models.ForeignKey("product.Item",verbose_name = "产品条目",related_name = "items")
     container = models.ForeignKey("Container",verbose_name= "原料容器",related_name="containers")
     consumption = models.IntegerField(verbose_name="用量（单位：g）")
-    water = models.IntegerField(verbose_name="水量（单位：ml）")
+    water = models.IntegerField(verbose_name="水量（单位：ml）",default=0)
     order = models.PositiveSmallIntegerField(verbose_name = "出料顺序",default = 1,help_text = "配方中原料的出料顺序")
     remarks = models.TextField(verbose_name="备注、描述",null=True,blank=True,help_text="请输入备注、描述等")
 
@@ -51,8 +51,8 @@ class Formula(BaseModel):
         verbose_name_plural = "独家配方"
         ordering = ["order",]
 
-    def __str__(self):
-        return self.item
+#    def __str__(self):
+#        return self.item
 
     def get_json(self):
         serials = serializers.serialize("json", [self])

@@ -4,7 +4,7 @@
 """
 此处提供众咖科技app 取货模块所需公共api
 """
-
+import random
 from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
 
@@ -28,7 +28,10 @@ class CodeCreateAPI(AbstractAPI):
         access_code = Access_Code(item_id = item_id,user_id = user_id,code = code)
         access_code.save()
 
-        data = code
+        info = {
+            'code':code
+            }
+        data = info
 
         return data
 
@@ -52,13 +55,17 @@ class CodeQueryAPI(AbstractAPI):
         code = kwarg['code']
 
         try:
-            code = Access_Code.objects.get(code = code)
+            code = Access_Code.objects.get(code = code,status=False)
             data = code.get_json()
             data['return_message'] = 'Verification successful'
             item_id = data['item']
             item = Item.objects.get(pk=item_id)
             item_detail = item.get_json()
             data['item_detail'] = item_detail
+            status_update = Access_Code.objects.filter(code = code).update(status=True)
+            data.pop('create_time')
+            data.pop('update_time')
+            data.pop('is_active')
             return data
         except Access_Code.DoesNotExist:
             return None
