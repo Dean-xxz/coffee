@@ -11,7 +11,7 @@ admin.site.register(Container,ContainerAdmin)
 
 
 class FormulaAdmin(admin.ModelAdmin):
-    list_display = ('item','container','consumption','order','remarks')
+    list_display = ('item','container','consumption','water',''order','remarks')
     list_filter = ('item',)
 
 
