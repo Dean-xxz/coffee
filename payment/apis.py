@@ -7,6 +7,7 @@
 import json
 from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
+from django.views.generic import View
 from .models import Order,Wechat_Transcation
 from product.models import Product
 from .wx_pay_utils import build_form_by_params
@@ -61,3 +62,12 @@ create_order_api = OrderCreationAPI().wrap_func()
 
 # 接受回调并更改订单状态
 
+
+class NotifyView(View):
+    def post(self, request, *args, **kwargs):
+        order_id = request.POST['out_trade_no']
+        info = {
+            "order":order_id
+        }
+
+        return ok_json(data = info)
