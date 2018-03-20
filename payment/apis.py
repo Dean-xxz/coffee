@@ -37,7 +37,7 @@ class OrderCreationAPI(AbstractAPI):
             # Payment
             params = build_form_by_params({
                 'body': body,
-                'out_trade_no': out_trade_no,
+                'out_trade_no': '1212',
                 'total_fee': '1',
                 'spbill_create_ip': '121.201.67.209',
                 # 'openid': 'oVXUA5fx9QbbEFL9hswQNS3F9W1Y',
@@ -69,5 +69,6 @@ class NotifyView(View):
         info = {
             "order":order_id
         }
-
+        print (info)
+        print ('wakakakakakaa')
         return ok_json(data = info)
