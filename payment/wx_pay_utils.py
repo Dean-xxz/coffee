@@ -7,9 +7,9 @@ import xmltodict
 import requests
 import json
 from dict2xml import dict2xml
-from .pay_settings import PAY_CONFIG
+from .pay_settings import WECHAT_PAY_CONFIG
 
-config = PAY_CONFIG
+config = WECHAT_PAY_CONFIG
 
     #构建签名
 def build_sign(params):
