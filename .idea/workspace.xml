@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="63d1fd74-cefd-4c76-a687-9a1d6def733f" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/payment/ali_pay_utils.py" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/payment/alipay.py" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
+      <change beforePath="$PROJECT_DIR$/coffee/settings.py" afterPath="$PROJECT_DIR$/coffee/settings.py" />
       <change beforePath="$PROJECT_DIR$/payment/apis.py" afterPath="$PROJECT_DIR$/payment/apis.py" />
-      <change beforePath="$PROJECT_DIR$/payment/pay_settings.py" afterPath="$PROJECT_DIR$/payment/pay_settings.py" />
       <change beforePath="$PROJECT_DIR$/payment/wx_pay_utils.py" afterPath="$PROJECT_DIR$/payment/wx_pay_utils.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

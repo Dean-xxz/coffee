@@ -104,6 +104,7 @@ def build_form_by_params(params):
     response = requests.post('https://api.mch.weixin.qq.com/pay/unifiedorder', data=xml, headers=headers)
     response.encoding = 'utf-8'
     response_dict = xmltodict.parse(response.text)['xml']
+    print (response_dict)
     if response_dict['return_code'] == 'SUCCESS':
         return response_dict
         # return build_form_by_prepay_id(response_dict['prepay_id'])
