@@ -23,7 +23,7 @@ class CodeCreateAPI(AbstractAPI):
     def access_db(self, kwarg):
         item_id = kwarg['item_id']
         user_id = kwarg['user_id']
-        code = ''.join(random.sample(['a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4','5','6','7','8','9','0'],6)).replace("", "")
+        code = ''.join(random.sample(['A', 'B', 'C', 'D', 'E', 'F', '1', '2', '3', '4','5','6','7','8','9','0'],6)).replace("", "")
 
         access_code = Access_Code(item_id = item_id,user_id = user_id,code = code)
         access_code.save()
