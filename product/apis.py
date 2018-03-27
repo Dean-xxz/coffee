@@ -52,3 +52,28 @@ class ProductListAPI(AbstractAPI):
 
 list_product_api = ProductListAPI().wrap_func()
 
+#后台商品条目列表
+
+class ItemListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'page': ('o', 1),
+            'page_size': ('o', 8),
+        }
+
+    def access_db(self, kwarg):
+        item_list = Item.objects.filter(is_active=True)
+        data = [o.get_json() for o in item_list]
+        for i in data:
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+
+        data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
+        return data
+
+    def format_data(self, data):
+        return ok_json(data = data)
+
+
+list_item_api = ItemListAPI().wrap_func()

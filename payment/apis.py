@@ -10,29 +10,32 @@ from utils.abstract_api import AbstractAPI
 from django.views.generic import View
 from .models import Order,Wechat_Transcation
 from product.models import Product
-from .wx_pay_utils import build_form_by_params
+from .wx_pay_utils import build_form_by_params,notify_xml_string_to_dict
 from .pay_settings import ALI_PAY_CONFIG
 
 config = ALI_PAY_CONFIG
 
-# 创建订单
 from alipay import AliPay, ISVAliPay
-#
+
+#初始化
+
 app_private_key_string = open("/home/coffee/coffee/payment/ali_key/rsa_private_key.pem").read()
 alipay_public_key_string = open("/home/coffee/coffee/payment/ali_key/rsa_public_key.pem").read()
 
 alipay = AliPay(
-#    appid=config['alipay_partner'],
     appid='2018011201807222',
+#    appid=config['alipay_partner'],
     app_notify_url=config['alipay_notify_url'],  # 默认回调url
     app_private_key_string=app_private_key_string,
     alipay_public_key_string=alipay_public_key_string,  # 支付宝的公钥，验证支付宝回传消息使用，不是你自己的公钥,
-    sign_type="RSA", # RSA 或者 RSA2
-    debug=True  # 默认False
+    sign_type="RSA2", # RSA 或者 RSA2
+    debug=False  # 默认False
 )
 
 
+ 
 
+#创建订单
 class OrderCreationAPI(AbstractAPI):
     def config_args(self):
         self.args = {
@@ -56,13 +59,10 @@ class OrderCreationAPI(AbstractAPI):
                 params = build_form_by_params({
                     'body': body,
                     'out_trade_no': out_trade_no,
-                    'total_fee': '1',
+                    'total_fee': total_fee,
                     'spbill_create_ip': '121.201.67.209',
-                    # 'openid': 'oVXUA5fx9QbbEFL9hswQNS3F9W1Y',
                 })
-                print (app_private_key_string)
                 data = json.dumps(params)
-                # data = order.get_json()
 
                 return data
 
@@ -79,12 +79,7 @@ class OrderCreationAPI(AbstractAPI):
                 order.save()
                 tn = order.id
                 subject = '众咖科技现磨咖啡'
-                # Payment
-                # params = create_direct_pay_by_user(tn = tn, subject = subject, body = body, total_fee = total_fee)
-
-                # data = json.dumps(params)
-                # data = order.get_json()
-                data=alipay.api_alipay_trade_precreate(subject="test subject",out_trade_no=tn,total_amount=1)
+                data=alipay.api_alipay_trade_precreate(subject="test subject",out_trade_no=tn,total_amount=0.1)
                 return data
 
             except Product.DoesNotExist:
@@ -103,10 +98,11 @@ create_order_api = OrderCreationAPI().wrap_func()
 
 class NotifyView(View):
     def post(self, request, *args, **kwargs):
-        order_id = request.POST['out_trade_no']
-        info = {
-            "order":order_id
-        }
+        info = request.POST
+        info = notify_xml_string_to_dict(info)
+#        info = {
+#            "order":order_id
+#        }
         print (info)
         print ('wakakakakakaa')
         return ok_json(data = info)
