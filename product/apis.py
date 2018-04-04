@@ -19,7 +19,7 @@ class ProductListAPI(AbstractAPI):
     def config_args(self):
         self.args = {
             'page': ('o', 1),
-            'page_size': ('o', 8),
+            'page_size': ('o', 20),
         }
 
     def access_db(self, kwarg):
@@ -58,7 +58,7 @@ class ItemListAPI(AbstractAPI):
     def config_args(self):
         self.args = {
             'page': ('o', 1),
-            'page_size': ('o', 8),
+            'page_size': ('o', 20),
         }
 
     def access_db(self, kwarg):

@@ -13,6 +13,8 @@ class Container(BaseModel):
     """
     title = models.CharField(max_length=128,verbose_name="容器名称")
     size = models.IntegerField(verbose_name="容量(单位：g)")
+    speed = models.IntegerField(verbose_name="默认掉粉速度(单位：g/s)",null=True,blank=True)
+    is_coffee = models.BooleanField(verbose_name='是否是咖啡盒',default = False)
     order = models.PositiveSmallIntegerField(verbose_name = "料盒顺序",default = 1,help_text = "从左到右排序")
     remarks = models.TextField(verbose_name="备注、描述",null=True,blank=True,help_text="请输入备注、描述等")
 
@@ -41,7 +43,11 @@ class Formula(BaseModel):
 
     item = models.ForeignKey("product.Item",verbose_name = "产品条目",related_name = "items")
     container = models.ForeignKey("Container",verbose_name= "原料容器",related_name="containers")
-    consumption = models.IntegerField(verbose_name="用量（单位：g）")
+    consumption = models.PositiveSmallIntegerField(verbose_name="用量（单位：g）")
+    effluentinterval = models.DecimalField(max_digits = 10,decimal_places = 2,verbose_name="出水间隔：单位（s）",null=True,blank=True)
+    dischargeperiod = models.DecimalField(max_digits = 10,decimal_places = 2,verbose_name='出料时间：单位（s）',null=True,blank=True)
+    dischargemotorspeed = models.PositiveSmallIntegerField(verbose_name='出料速度：单位（s/g）',null=True,blank=True)
+    mixermotorspeed = models.PositiveSmallIntegerField(verbose_name="搅拌机转速",null=True,blank=True)
     water = models.IntegerField(verbose_name="水量（单位：ml）",default=0)
     order = models.PositiveSmallIntegerField(verbose_name = "出料顺序",default = 1,help_text = "配方中原料的出料顺序")
     remarks = models.TextField(verbose_name="备注、描述",null=True,blank=True,help_text="请输入备注、描述等")

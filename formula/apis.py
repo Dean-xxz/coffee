@@ -28,10 +28,16 @@ class FormulaQueryAPI(AbstractAPI):
             container_id = i['container']
             container = Container.objects.get(pk=container_id)
             container_name = container.title
+            container_id = container.order
+            i['container_id'] = container_id
             item = Item.objects.get(pk=item_id)
+            i['hotcoolchoice'] = item.can_select
             item_title = item.title
             i['item_title'] = item_title
             i['container_name'] = container_name
+            print (type(i['effluentinterval']))
+            i['dischargeperiod'] = float(i['dischargeperiod'])
+            i['effluentinterval'] = float(i['effluentinterval'])
             i.pop('create_time')
             i.pop('update_time')
             i.pop('is_active')
@@ -44,3 +50,24 @@ class FormulaQueryAPI(AbstractAPI):
 
 
 query_formula_api = FormulaQueryAPI().wrap_func()
+
+#料盒列表接口
+class ContainerListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+        }
+
+    def access_db(self, kwarg):
+        container = Container.objects.filter(is_active=True)
+        data = [o.get_json() for o in container]
+        for i in data:
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+        return data
+
+    def format_data(self, data):
+        return ok_json(data = data)
+
+
+list_container_api = ContainerListAPI().wrap_func()
