@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^payment/', include('payment.urls', namespace="payment")),  # 支付模块接口url
     url(r'^formula/', include('formula.urls', namespace="formula")),  # 配方模块接口url
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
+    url(r'^machine/', include('machine.urls', namespace="machine")),  # 机器模块接口url
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
