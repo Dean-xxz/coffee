@@ -17,7 +17,6 @@ dist/
 static/
 media/
 migrations/
-payment/
 db.sqllite3
 
 build/
