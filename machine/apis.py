@@ -20,21 +20,31 @@ class MachineCreateAPI(AbstractAPI):
 
     def access_db(self, kwarg):
         mac_address = kwarg['mac_address']
-
-        address = "请完善信息"
-        machine = Machine(mac_address=mac_address,address=address)
-        machine.save()
-
-        if machine:
-            machine_id = machine.id
+        
+        try:
+            unique = Machine.objects.get(mac_address = mac_address)
+            machine_id = unique.id
 
             info = {
                 'machine_id':machine_id
                 }
             data = info
             return data
-        else:
-            return None
+        except Machine.DoesNotExist:
+            address = "请完善信息"
+            machine = Machine(mac_address=mac_address,address=address)
+            machine.save()
+
+            if machine:
+                machine_id = machine.id
+
+                info = {
+                    'machine_id':machine_id
+                    }
+                data = info
+                return data
+            else:
+                return None
 
 
     def format_data(self, data):
