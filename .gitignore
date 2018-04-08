@@ -11,11 +11,13 @@ __pycache__/
 env/
 venv/
 build/
+coffee/settings.py
 develop-eggs/
 dist/
 static/
 media/
 migrations/
+payment/
 db.sqllite3
 
 build/
