@@ -7,7 +7,8 @@ admin.site.site_header = "众咖科技集成管理平台"
 
 
 class AdvertisementAdmin(admin.ModelAdmin):
-    list_display = ('order','link','image','video')
+    list_display = ('order','link','image','is_terminal','video')
+    list_filter = ('is_terminal',)
 
 
 admin.site.register(Advertisement,AdvertisementAdmin)

@@ -16,17 +16,27 @@ from .models import Advertisement
 class AdListAPI(AbstractAPI):
     def config_args(self):
         self.args = {
+            "is_terminal":('o',None)
         }
 
     def access_db(self, kwarg):
-        ad_list = Advertisement.objects.filter(is_active=True)
+        is_terminal = kwarg['is_terminal']
+        print (is_terminal)
+        if is_terminal == 'False':
+            ad_list = Advertisement.objects.filter(is_active=True,is_terminal=False)
+            data = [o.get_json() for o in ad_list]
+            for i in data:
+                i.pop('is_active')
+                i.pop('update_time')
+                i.pop('create_time')
+            return data
+        ad_list = Advertisement.objects.filter(is_active=True,is_terminal=True)
         data = [o.get_json() for o in ad_list]
         for i in data:
             i.pop('is_active')
             i.pop('update_time')
             i.pop('create_time')
         return data
-
     def format_data(self, data):
         return ok_json(data = data)
 

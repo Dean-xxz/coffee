@@ -12,6 +12,7 @@ class Advertisement(BaseModel):
     """
     title = models.CharField(max_length=128,verbose_name="广告标题",null=True,blank=True)
     link = models.CharField(max_length=128,verbose_name="广告链接",null=True,blank=True)
+    is_terminal = models.BooleanField(verbose_name="是否终端显示",default=False)
     image = models.ImageField(upload_to="media/ad/img/",verbose_name="广告图片",null=True,blank=True)
     video = models.FileField(upload_to="media/ad/video/",verbose_name="广告视频",null=True,blank=True)
     order = models.PositiveSmallIntegerField(verbose_name = "顺序",default = 1,help_text = "该广告在广告列表中的顺序")

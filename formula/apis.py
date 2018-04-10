@@ -22,7 +22,7 @@ class FormulaQueryAPI(AbstractAPI):
     def access_db(self, kwarg):
         item_id = kwarg['item_id']
 
-        formula = Formula.objects.filter(item_id=item_id,is_active=True)
+        formula = Formula.objects.filter(item_id=item_id,is_active=True).order_by('order')
         data = [o.get_json() for o in formula]
         for i in data:
             container_id = i['container']
@@ -36,7 +36,6 @@ class FormulaQueryAPI(AbstractAPI):
             i['item_title'] = item_title
             i['container_name'] = container_name
             print (type(i['effluentinterval']))
-            i['dischargeperiod'] = float(i['dischargeperiod'])
             i['effluentinterval'] = float(i['effluentinterval'])
             i.pop('create_time')
             i.pop('update_time')
