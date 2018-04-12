@@ -54,11 +54,15 @@ class FormulaQueryAPI(AbstractAPI):
             item_id = i['id']
             formula = Formula.objects.filter(item_id=item_id,is_active=True).order_by('order')
             formula_list = [o.get_json() for o in formula]
+            item_title = i['title']
+            hotcoolchoice = i['can_select']
             for j in formula_list:
                 container_id = j['container']
                 container = Container.objects.get(pk=container_id)
                 container_name = container.title
                 container_id = container.order
+                j['item_title'] = item_title
+                j['hotcoolchoice'] = hotcoolchoice
                 j['container_id'] = container_id
                 j['container_name'] = container_name
                 j['effluentinterval'] = float(j['effluentinterval'])

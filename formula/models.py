@@ -13,7 +13,7 @@ class Container(BaseModel):
     """
     title = models.CharField(max_length=128,verbose_name="容器名称")
     size = models.IntegerField(verbose_name="容量(单位：g)")
-    speed = models.IntegerField(verbose_name="默认掉粉速度(单位：g/s)",null=True,blank=True)
+    speed = models.DecimalField(max_digits = 10,decimal_places = 1,verbose_name="默认掉粉速度：单位（g/s）",null=True,blank=True)
     is_coffee = models.BooleanField(verbose_name='是否是咖啡盒',default = False)
     order = models.PositiveSmallIntegerField(verbose_name = "料盒顺序",default = 1,help_text = "面向机器，从右往左")
     remarks = models.TextField(verbose_name="备注、描述",null=True,blank=True,help_text="请输入备注、描述等")
