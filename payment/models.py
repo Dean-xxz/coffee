@@ -17,7 +17,7 @@ class Order(BaseModel):
             ('W',("微信支付")),
         )
     # user
-    product = models.ForeignKey("product.Product",verbose_name = "产品",related_name = "order_product")
+    product = models.ForeignKey("product.Product",verbose_name = "产品",related_name = "order_product",null=True,blank=True)
     machine = models.ForeignKey('machine.Machine',verbose_name = "销售机器",related_name = "order_machine",null=True,blank=True)
     total_fee = models.DecimalField(max_digits = 10,decimal_places = 2,verbose_name="总价")
     channel = models.CharField(max_length = 1,verbose_name = "支付渠道",null = True,blank = True,choices = CHANNEL_CHOICES)

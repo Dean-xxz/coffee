@@ -5,7 +5,7 @@ from .models import Channel,Machine
 
 
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = ('id','title','remarks')
+    list_display = ('id','title','mobile','remarks')
 
 admin.site.register(Channel,ChannelAdmin)
 

@@ -11,6 +11,7 @@ class Channel(BaseModel):
     咖啡机经销商、渠道
     """
     title = models.CharField(max_length=128,verbose_name="渠道名称",null=True,blank=True)
+    mobile = models.CharField(max_length=12,verbose_name="服务热线",null=True,blank=True)
     remarks = models.TextField(verbose_name="渠道简介",null=True,blank=True,help_text="请输入渠道简介")
 
 
