@@ -42,7 +42,7 @@ class CodeCreateAPI(AbstractAPI):
 create_code_api = CodeCreateAPI().wrap_func()
 
 
-# 取货码创建接口
+# 取货码验证接口
 
 
 class CodeQueryAPI(AbstractAPI):
@@ -62,7 +62,6 @@ class CodeQueryAPI(AbstractAPI):
             item = Item.objects.get(pk=item_id)
             item_detail = item.get_json()
             data['item_detail'] = item_detail
-            status_update = Access_Code.objects.filter(code = code).update(status=True)
             data.pop('create_time')
             data.pop('update_time')
             data.pop('is_active')
@@ -78,3 +77,28 @@ class CodeQueryAPI(AbstractAPI):
 
 
 query_code_api = CodeQueryAPI().wrap_func()
+
+class CodeUpdateAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'code':'r',
+        }
+
+    def access_db(self, kwarg):
+        code = kwarg['code']
+
+        try:
+            code = Access_Code.objects.get(code = code,status=False)
+            status_update = Access_Code.objects.filter(code = code).update(status=True)
+            data = "update successful"
+            return data
+        except Access_Code.DoesNotExist:
+            return None
+
+
+    def format_data(self, data):
+        if data is not None:
+            return ok_json(data = data)
+        return fail_json('code is error')
+
+update_code_api = CodeUpdateAPI().wrap_func()

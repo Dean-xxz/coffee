@@ -31,6 +31,9 @@ class ProductListAPI(AbstractAPI):
             for j in item_ids:
                 item_detail = Item.objects.get(pk=j)
                 item_detail = item_detail.get_json()
+                item_detail['item_id'] = item_detail['id']
+                item_detail.pop('id')
+                item_detail.pop('image')
                 item_detail.pop('update_time')
                 item_detail.pop('create_time')
                 item_detail.pop('is_active')
@@ -41,6 +44,13 @@ class ProductListAPI(AbstractAPI):
             i.pop('create_time')
             i.pop('update_time')
             i.pop('is_active')
+            i.pop('items')
+            i.pop('small_image')
+            i.pop('big_image')
+            i.pop('count')
+            i.pop('remarks')
+            i['product_id'] = i['id']
+            i.pop('id')
 
         data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
         return data
@@ -66,10 +76,20 @@ class ProductSuitListAPI(AbstractAPI):
         data = [o.get_json() for o in Product_list]
         for i in data:
             item_ids = i['items']
+            i.pop('items')
+            i['product'] = i['id']
+            i.pop('id')
+            i.pop('small_image')
+            i.pop('big_image')
+            i.pop('count')
+            i.pop('remarks')
             i['item_info'] = []
             for j in item_ids:
                 item_detail = Item.objects.get(pk=j)
                 item_detail = item_detail.get_json()
+                item_detail['item_id'] = item_detail['id']
+                item_detail.pop('id')
+                item_detail.pop('image')
                 item_detail.pop('update_time')
                 item_detail.pop('create_time')
                 item_detail.pop('is_active')
