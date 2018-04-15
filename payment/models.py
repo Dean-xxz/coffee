@@ -4,6 +4,7 @@ from utils.basemodel.base import BaseModel
 from django.core import serializers
 from product.models import Product
 from machine.models import Machine
+from accounts.models import Wechat_user
 
 # Create your models here.
 
@@ -16,15 +17,15 @@ class Order(BaseModel):
             ('Z',("支付宝支付")),
             ('W',("微信支付")),
         )
-    # user
-    product = models.ForeignKey("product.Product",verbose_name = "产品",related_name = "order_product",null=True,blank=True)
+    user = models.ForeignKey('accounts.Wechat_user',verbose_name = "用户",related_name = "order_user",null=True,blank=True)
+    products = models.ManyToManyField("product.Product",verbose_name = "产品",related_name = "order_product",null=True,blank=True)
     machine = models.ForeignKey('machine.Machine',verbose_name = "销售机器",related_name = "order_machine",null=True,blank=True)
     total_fee = models.DecimalField(max_digits = 10,decimal_places = 2,verbose_name="总价")
     channel = models.CharField(max_length = 1,verbose_name = "支付渠道",null = True,blank = True,choices = CHANNEL_CHOICES)
     is_payment = models.BooleanField(verbose_name="是否付款",default=False)
     is_delivery =models.BooleanField(verbose_name="是否发货",default=False)
     is_refound = models.BooleanField(verbose_name="是否退款",default=False)
-    # coupon
+    is_received = models.BooleanField(verbose_name="是否赠送",default=False)
     remarks = models.CharField(max_length=1024,verbose_name="备注",null=True,blank=True)
 
 

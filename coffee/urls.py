@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^formula/', include('formula.urls', namespace="formula")),  # 配方模块接口url
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
     url(r'^machine/', include('machine.urls', namespace="machine")),  # 机器模块接口url
+    url(r'^accounts/', include('accounts.urls', namespace="accounts")),  # 用户模块接口url
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

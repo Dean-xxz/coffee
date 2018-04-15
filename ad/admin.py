@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Advertisement
+from .models import Advertisement,Preference
 
 # Register your models here.
 
@@ -12,3 +12,9 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Advertisement,AdvertisementAdmin)
+
+class PreferenceAdmin(admin.ModelAdmin):
+    list_display = ('title','link')
+
+
+admin.site.register(Preference,PreferenceAdmin)

@@ -8,9 +8,10 @@
 from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
 
-from .models import Wechat_user,Invitation
-
-
+from .models import Wechat_user,Invitation,Shopping_cart,Coffee_bank
+from product.models import Product,Item
+from access_code.models import Access_Code
+from payment.models import Order
 
 # 微信新用户注册
 class UserCreateAPI(AbstractAPI):
@@ -85,3 +86,214 @@ class OpenidQueryAPI(AbstractAPI):
 
 
 query_openid_api = OpenidQueryAPI().wrap_func()
+
+#添加购物车商品
+class CartCreateAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+            'product_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+        product_id = kwarg['product_id']
+        
+        try:
+            user = Wechat_user.objects.get(pk = user_id)
+            cart = Shopping_cart(user_id = user_id,product_id = product_id)
+            cart.save()
+            if cart:
+                data = 'add cart successful'
+                return data
+            else:
+                return None
+        except Wechat_user.DoesNotExist:
+            return None
+
+    def format_data(self,data):
+        if data is not None:
+            return ok_json(data=data)
+        return fail_json('add cart faild')
+
+create_cart_api = CartCreateAPI().wrap_func()
+
+
+
+#购物车商品删除接口
+class CartDeleteAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+            'product_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+        product_id = kwarg['product_id']
+        cart = Shopping_cart.objects.filter(user_id = user_id,product_id = product_id).update(is_active = False)
+        data = 'delete successful'
+        return data
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+delete_cart_api = CartDeleteAPI().wrap_func()
+
+
+#购物车列表查询接口
+class CartListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+
+        cart = Shopping_cart.objects.filter(user_id = user_id,is_active = True)
+        cart = [o.get_json() for o in cart]
+
+        for i in cart:
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+            product_id = i['product']
+            product_info = Product.objects.get(pk = product_id)
+            product_info = product_info.get_json()
+            i['product_info'] = product_info
+
+        return cart
+            
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+list_cart_api = CartListAPI().wrap_func()
+
+
+#添加到我的咖啡库接口
+class BankCreateAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+            'code_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+        code_id = kwarg['code_id']
+
+        try:
+            user = Wechat_user.objects.get(pk = user_id)
+            try:
+                bank = Coffee_bank.objects.get(user_id = user_id,access_code_id = code_id)
+                return 'add coffee_bank successful'
+            except Coffee_bank.DoesNotExist:
+                bank = Coffee_bank(user_id = user_id,access_code_id = code_id)
+                bank.save()
+                if bank:
+                    data = 'add coffee_bank successful'
+                    return data
+                else:
+                    return None
+        except Wechat_user.DoesNotExist:
+            return None
+
+    def format_data(self,data):
+        if data is not None:
+            return ok_json(data=data)
+        return fail_json('add coffee_bank faild')
+
+create_bank_api = BankCreateAPI().wrap_func()
+
+
+#咖啡库中咖啡赠送
+class BankUpdateAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+            'code_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+        code_id = kwarg['code_id']
+
+        try:
+            user = Wechat_user.objects.get(pk = user_id)
+            bank = Coffee_bank.objects.filter(access_code_id = code_id).update(user_id = user_id)
+            return 'update coffee_bank success'
+        except Wechat_user.DoesNotExist:
+            return None
+
+    def format_data(self,data):
+        if data is not None:
+            return ok_json(data=data)
+        return fail_json('update coffee_bank faild')
+
+update_bank_api = BankUpdateAPI().wrap_func()
+
+
+#我的咖啡库列表查询接口
+class BankListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+
+        bank = Coffee_bank.objects.filter(user_id = user_id,is_active = True)
+        bank = [o.get_json() for o in bank]
+
+        for i in bank:
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+            code_id = i['access_code']
+            code = Access_Code.objects.get(pk = code_id)
+            code = code.get_json()
+            item_id = code['item']
+            item = Item.objects.get(pk = item_id)
+            item = item.get_json()
+            i['item_info'] = item
+
+        return bank
+
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+list_bank_api = BankListAPI().wrap_func()
+
+
+#我的订单列表
+class OrderListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+
+        order = Order.objects.filter(user_id = user_id,is_active = True,is_payment = True)
+        order = [o.get_json() for o in order]
+
+        for i in order:
+            product_ids = i['products']
+            i['product_info'] = []
+            for j in product_ids:
+                product_info = Product.objects.get(pk = j)
+                product_info = product_info.get_json()
+                i['product_info'].append(product_info)
+
+        return order
+
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+list_order_api = OrderListAPI().wrap_func()

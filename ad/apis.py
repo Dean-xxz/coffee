@@ -8,7 +8,7 @@
 from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
 
-from .models import Advertisement
+from .models import Advertisement,Preference
 
 # 广告列表接口
 
@@ -26,6 +26,8 @@ class AdListAPI(AbstractAPI):
             ad_list = Advertisement.objects.filter(is_active=True,is_terminal=False)
             data = [o.get_json() for o in ad_list]
             for i in data:
+                preference = Preference.objects.get(pk=1)
+                i['preference'] = preference.title
                 i.pop('is_active')
                 i.pop('update_time')
                 i.pop('create_time')

@@ -23,7 +23,7 @@ class ProductListAPI(AbstractAPI):
         }
 
     def access_db(self, kwarg):
-        Product_list = Product.objects.filter(is_active=True,is_suit=False)
+        Product_list = Product.objects.filter(is_active=True)
         data = [o.get_json() for o in Product_list]
         for i in data:
             item_ids = i['items']
@@ -52,7 +52,7 @@ class ProductListAPI(AbstractAPI):
             i['product_id'] = i['id']
             i.pop('id')
 
-        data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
+#        data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
         return data
 
     def format_data(self, data):
@@ -101,7 +101,7 @@ class ProductSuitListAPI(AbstractAPI):
             i.pop('update_time')
             i.pop('is_active')
 
-        data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
+#        data = dict_pagination_response(data, self.request, int(kwarg['page']), int(kwarg['page_size']))
         return data
 
     def format_data(self, data):

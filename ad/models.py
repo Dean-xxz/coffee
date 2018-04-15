@@ -5,6 +5,31 @@ from django.core import serializers
 
 # Create your models here.
 
+class Preference(BaseModel):
+    """
+    优惠信息
+    """ 
+    title = models.CharField(max_length=1024,verbose_name="优惠标题")
+    link = models.CharField(max_length=128,verbose_name="优惠链接",null=True,blank=True)
+    descp = models.TextField(verbose_name="优惠描述",null=True,blank=True)
+
+    class Meta:
+        verbose_name = "优惠信息"
+        verbose_name_plural = "优惠信息"
+        ordering = ["-create_time",]
+
+    def __str__(self):
+        return self.title
+
+    def get_json(self):
+        serials = serializers.serialize("json", [self])
+        struct = json.loads(serials)
+        data = struct[0]['fields']
+        if 'pk' in struct[0]:
+            data['id'] = struct[0]['pk']
+        return data
+
+
 class Advertisement(BaseModel):
 
     """
