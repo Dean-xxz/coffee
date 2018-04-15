@@ -5,6 +5,7 @@ from django.core import serializers
 from django.conf import settings
 from product.models import Product
 from access_code.models import Access_Code
+from coupon.models import Coupon
 # Create your models here.
 
 class Wechat_user(BaseModel):
@@ -90,7 +91,7 @@ class Coffee_bank(BaseModel):
         verbose_name_plural = "咖啡库"
         ordering = ["-create_time",]
 
-    user = models.ForeignKey("Wechat_user",verbose_name="用户",related_name="bank_user")
+    user = models.ForeignKey("Wechat_user",verbose_name="用户",related_name="coupon_user")
     access_code = models.ForeignKey("access_code.Access_Code",verbose_name="提货码",related_name="bank_code")
 
 
@@ -102,3 +103,24 @@ class Coffee_bank(BaseModel):
             data['id'] = struct[0]['pk']
         return data
 
+
+class Coupon_bank(BaseModel):
+    """
+    我的优惠券
+    """
+    class Meta:
+        verbose_name = "我的优惠券"
+        verbose_name_plural = "我的优惠券"
+        ordering = ["-create_time",]
+
+    user = models.ForeignKey("Wechat_user",verbose_name="用户",related_name="bank_user")
+    coupon = models.ForeignKey("coupon.Coupon",verbose_name="优惠券",related_name="bank_coupon")
+    dead_line = models.DateTimeField(blank=True,null=True,verbose_name="优惠截止日期")
+
+    def get_json(self):
+        serials = serializers.serialize("json", [self])
+        struct = json.loads(serials)
+        data = struct[0]['fields']
+        if 'pk' in struct[0]:
+            data['id'] = struct[0]['pk']
+        return data

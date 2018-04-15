@@ -4,15 +4,15 @@
 """
 此处提供众咖科技微信商城 支付模块所需公共api
 """
-
+import datetime
 from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
 
-from .models import Wechat_user,Invitation,Shopping_cart,Coffee_bank
+from .models import Wechat_user,Invitation,Shopping_cart,Coffee_bank,Coupon_bank
 from product.models import Product,Item
 from access_code.models import Access_Code
 from payment.models import Order
-
+from coupon.admin import Coupon
 # 微信新用户注册
 class UserCreateAPI(AbstractAPI):
     def config_args(self):
@@ -297,3 +297,91 @@ class OrderListAPI(AbstractAPI):
         return ok_json(data=data)
 
 list_order_api = OrderListAPI().wrap_func()
+
+
+#优惠券列表接口
+class CouponListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+
+        }
+
+    def access_db(self,kwarg):
+
+        coupon = Coupon.objects.filter(dead_line__gt=datetime.datetime.now().date(), is_active=True)
+        coupon = [o.get_json() for o in coupon]
+        for i in coupon:
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+        return coupon
+
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+list_coupon_api = CouponListAPI().wrap_func()
+
+#优惠券领取接口
+class MyCouponCreateAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+            'coupon_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+        coupon_id = kwarg['coupon_id']
+
+        try:
+            coupon = Coupon.objects.get(pk = coupon_id)
+            dead_line = coupon.dead_line
+            coupon_bank = Coupon_bank(user_id = user_id,coupon_id = coupon_id,dead_line = dead_line)
+            coupon_bank.save()
+            if coupon:
+                data = 'recive successful'
+                return data
+            return None
+        except Coupon.DoesNotExist:
+            return None
+
+
+    def format_data(self,data):
+        if data is not None:
+            return ok_json(data=data)
+        return fail_json('recive faild')
+
+create_mycoupon_api = MyCouponCreateAPI().wrap_func()
+
+
+#我的优惠券列表接口
+class MyCouponListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'user_id':'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+
+        coupon = Coupon_bank.objects.filter(dead_line__gt=datetime.datetime.now().date(), is_active=True,user_id=user_id)
+        coupon = [o.get_json() for o in coupon]
+        for i in coupon:
+            coupon_id = i['coupon']
+            coupon_info = Coupon.objects.get(pk=coupon_id)
+            coupon_info = coupon_info.get_json()
+            coupon_info.pop('create_time')
+            coupon_info.pop('update_time')
+            coupon_info.pop('is_active')
+            i['coupon_info'] = coupon_info
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+        return coupon
+
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+list_mycoupon_api = MyCouponListAPI().wrap_func()

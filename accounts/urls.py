@@ -11,5 +11,9 @@ urlpatterns = [
     url(r'^bank/update/$', accounts.apis.update_bank_api, name="bank_update_api"),
     url(r'^bank/list/$', accounts.apis.list_bank_api, name="bank_list_api"),
     url(r'^order/list/$', accounts.apis.list_order_api, name="order_list_api"),
+    url(r'^coupon/list/$', accounts.apis.list_coupon_api, name="coupon_list_api"),
+    url(r'^mycoupon/create/$', accounts.apis.create_mycoupon_api, name="mycoupon_create_api"),
+    url(r'^mycoupon/list/$', accounts.apis.list_mycoupon_api, name="mycoupon_list_api"),
+
 ]
 
