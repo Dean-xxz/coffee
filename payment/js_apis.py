@@ -17,45 +17,38 @@ from .js_wechat_pay import build_form_by_params_js
 class OrderCreationAPI(AbstractAPI):
     def config_args(self):
         self.args = {
-            'product_id': ('o', None),
-            'machine_id': ('o', None),
+            'product_ids': 'r',
+            'user_id':'r',
             'openid':('o', None),
-            'total_fee':('o',None),
-            'pay_type':('o',None),        #结算方式
-
+            'coupon_id':('o',None),
         }
 
     def access_db(self, kwarg):
-        product_id = kwarg['product_id']
-        channel = kwarg['channel']
-        machine_id = kwarg['machine_id']
+        product_ids = kwarg['product_ids']
         openid = kwarg['openid']
-        total_fee = kwarg['total_fee']
-        channel = 'W'
-        # 判断结算方式
-        try:
-            product = Product.objects.get(pk=product_id)
-            body = product.title
-
-            order = Order(product_id=product_id, total_fee=total_fee, channel=channel, machine_id=machine_id)
-            order.save()
-            out_trade_no = order.id
-            # Payment
-            total_fee = total_fee * 100
-            params = build_form_by_params_js({
-                'body': body,
-                'out_trade_no': out_trade_no,
-                'total_fee': total_fee,
-                'spbill_create_ip': '121.201.67.209',
-                'openid':openid,
-            })
-            data = json.dumps(params)
-            data = json.loads(data)
-            data['out_trade_no'] = out_trade_no
-            return data
-
-        except Product.DoesNotExist:
-            return None
+        user_id = kwarg['user_id']
+        coupon_id = kwarg['coupon_id']
+        
+                    
+        total_fee = '12'
+        order = Order(total_fee=total_fee,product_ids=product_ids, channel='W',user_id=user_id,coupon_id=coupon_id,scene='2')
+        order.save()
+        order = order.id
+            
+        return order.get_json()
+        # Payment
+            #total_fee = total_fee * 100
+            #params = build_form_by_params_js({
+            #    'body': body,
+            #    'out_trade_no': out_trade_no,
+            #    'total_fee': total_fee,
+            #    'spbill_create_ip': '121.201.67.209',
+            #    'openid':openid,
+            #})
+            #data = json.dumps(params)
+            #data = json.loads(data)
+            #data['out_trade_no'] = out_trade_no
+            #return data
 
     def format_data(self, data):
         if data is not None:

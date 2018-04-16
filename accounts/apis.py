@@ -337,12 +337,16 @@ class MyCouponCreateAPI(AbstractAPI):
         try:
             coupon = Coupon.objects.get(pk = coupon_id)
             dead_line = coupon.dead_line
-            coupon_bank = Coupon_bank(user_id = user_id,coupon_id = coupon_id,dead_line = dead_line)
-            coupon_bank.save()
-            if coupon:
-                data = 'recive successful'
-                return data
-            return None
+            try:
+                is_recived = Coupon_bank.objects.get(user_id = user_id,coupon_id = coupon_id,is_active = True)
+                return 'recive successful'
+            except Coupon_bank.DoesNotExist:
+                coupon_bank = Coupon_bank(user_id = user_id,coupon_id = coupon_id,dead_line = dead_line)
+                coupon_bank.save()
+                if coupon:
+                    data = 'recive successful'
+                    return data
+                return None
         except Coupon.DoesNotExist:
             return None
 

@@ -5,7 +5,7 @@ from django.core import serializers
 from product.models import Product
 from machine.models import Machine
 from accounts.models import Wechat_user
-
+from accounts.models import Coupon_bank
 # Create your models here.
 
 class Order(BaseModel):
@@ -17,11 +17,18 @@ class Order(BaseModel):
             ('Z',("支付宝支付")),
             ('W',("微信支付")),
         )
+    SCENE_CHOICES = (
+            ('1',("线下订单")),
+            ('2',("线上订单")),
+        )
+
     user = models.ForeignKey('accounts.Wechat_user',verbose_name = "用户",related_name = "order_user",null=True,blank=True)
+    coupon_bank = models.ForeignKey('accounts.Coupon_bank',verbose_name = "优惠券",related_name = "order_bank",null=True,blank=True)
     products = models.ManyToManyField("product.Product",verbose_name = "产品",related_name = "order_product",null=True,blank=True)
     machine = models.ForeignKey('machine.Machine',verbose_name = "销售机器",related_name = "order_machine",null=True,blank=True)
     total_fee = models.DecimalField(max_digits = 10,decimal_places = 2,verbose_name="总价")
     channel = models.CharField(max_length = 1,verbose_name = "支付渠道",null = True,blank = True,choices = CHANNEL_CHOICES)
+    scene = models.CharField(max_length = 1,verbose_name = "订单场景（线下，线上）",default = 1,choices = SCENE_CHOICES)
     is_payment = models.BooleanField(verbose_name="是否付款",default=False)
     is_delivery =models.BooleanField(verbose_name="是否发货",default=False)
     is_refound = models.BooleanField(verbose_name="是否退款",default=False)
