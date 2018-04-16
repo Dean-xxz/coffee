@@ -18,24 +18,33 @@ class OrderCreationAPI(AbstractAPI):
     def config_args(self):
         self.args = {
             'product_ids': 'r',
-            'user_id':'r',
-            'openid':('o', None),
-            'coupon_id':('o',None),
+            # 'user_id':'r',
+            # 'openid':('o', None),
+            # 'coupon_id':('o',None),
         }
 
     def access_db(self, kwarg):
         product_ids = kwarg['product_ids']
-        openid = kwarg['openid']
-        user_id = kwarg['user_id']
-        coupon_id = kwarg['coupon_id']
-        
-                    
-        total_fee = '12'
-        order = Order(total_fee=total_fee,product_ids=product_ids, channel='W',user_id=user_id,coupon_id=coupon_id,scene='2')
-        order.save()
-        order = order.id
-            
-        return order.get_json()
+        print (type(product_ids))
+        product_ids=product_ids.replace(',','')
+        # openid = kwarg['openid']
+        # user_id = kwarg['user_id']
+        # coupon_id = kwarg['coupon_id']
+        #
+        for i in product_ids:
+            product = Product.objects.get(pk=i)
+            order = Order.objects.get(pk=36)
+            order.products.add(product)
+
+            print (i)
+        print (product_ids)
+        return None
+        # total_fee = '12'
+        # order = Order(total_fee=total_fee,product_ids=product_ids, channel='W',user_id=user_id,coupon_id=coupon_id,scene='2')
+        # order.save()
+        # order = order.id
+        #
+        # return order.get_json()
         # Payment
             #total_fee = total_fee * 100
             #params = build_form_by_params_js({

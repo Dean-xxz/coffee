@@ -56,7 +56,8 @@ class OrderCreationAPI(AbstractAPI):
                 total_fee = int(product.vip_price)
                 body = product.title
 
-                order = Order(product_id = product_id,total_fee = total_fee,channel = channel,machine_id = machine_id)
+                order = Order(total_fee = total_fee,channel = channel,machine_id = machine_id)
+                order.products.add(product)
                 order.save()
                 out_trade_no = order.id
                 # Payment
@@ -81,7 +82,8 @@ class OrderCreationAPI(AbstractAPI):
                 total_fee = int(product.vip_price)
                 subject = product.title
 
-                order = Order(product_id=product_id, total_fee=total_fee, channel=channel,machine_id = machine_id)
+                order = Order(total_fee=total_fee, channel=channel,machine_id = machine_id)
+                order.products.add(product)
                 order.save()
                 tn = order.id
                 data=alipay.api_alipay_trade_precreate(subject=subject,out_trade_no=tn,total_amount=total_fee)
