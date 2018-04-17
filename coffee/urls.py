@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.views.generic.base import TemplateView
 from django.conf.urls import url,include
 from django.conf.urls.static import static
 from django.conf import settings
@@ -13,7 +14,9 @@ urlpatterns = [
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
     url(r'^machine/', include('machine.urls', namespace="machine")),  # 机器模块接口url
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),  # 用户模块接口url
-    url(r'^media/oauth/$', CodeView.as_view(), name="user_oauth_api"),
+    url(r'^wechat/oauth/$', CodeView.as_view(), name="user_oauth_api"),
+    url(r'^wechat/oauth/MP_verify_dEL3zvMhlfiUJgmt\.txt',TemplateView.as_view(template_name= 'MP_verify_dEL3zvMhlfiUJgmt.txt')),
+
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
