@@ -13,6 +13,8 @@ from product.models import Product,Item
 from access_code.models import Access_Code
 from payment.models import Order
 from coupon.admin import Coupon
+from django.views.generic import View
+
 # 微信新用户注册
 class UserCreateAPI(AbstractAPI):
     def config_args(self):
