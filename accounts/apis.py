@@ -389,3 +389,13 @@ class MyCouponListAPI(AbstractAPI):
         return ok_json(data=data)
 
 list_mycoupon_api = MyCouponListAPI().wrap_func()
+
+
+class CodeView(View):
+    def get(self, request, *args, **kwargs):
+            #get password and username
+        code = request.GET.get('code')
+        data = code
+        print (data)
+            #如果不成功，测取消订单
+        return None

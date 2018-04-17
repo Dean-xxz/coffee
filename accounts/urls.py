@@ -1,8 +1,10 @@
 import accounts.apis
 from django.conf.urls import url
+from .apis import CodeView
 
 urlpatterns = [
     url(r'^user/create/$', accounts.apis.create_user_api, name="user_create_api"),
+    url(r'^user/oauth/$', accounts.apis.CodeView.as_view(), name="user_oauth_api"),
     url(r'^openid/query/$', accounts.apis.query_openid_api, name="openid_query_api"),
     url(r'^cart/create/$', accounts.apis.create_cart_api, name="cart_create_api"),
     url(r'^cart/delete/$', accounts.apis.delete_cart_api, name="cart_delete_api"),    
