@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.conf.urls import url,include
 from django.conf.urls.static import static
 from django.conf import settings
+from accounts.apis import CodeView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -12,6 +13,7 @@ urlpatterns = [
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
     url(r'^machine/', include('machine.urls', namespace="machine")),  # 机器模块接口url
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),  # 用户模块接口url
+    url(r'^media/oauth/$', accounts.apis.CodeView.as_view(), name="user_oauth_api"),
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
