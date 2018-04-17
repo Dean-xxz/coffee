@@ -57,8 +57,8 @@ class OrderCreationAPI(AbstractAPI):
                 body = product.title
 
                 order = Order(total_fee = total_fee,channel = channel,machine_id = machine_id)
-                order.products.add(product)
                 order.save()
+                order.products.add(product)
                 out_trade_no = order.id
                 # Payment
                 total_fee = total_fee*100
@@ -83,8 +83,8 @@ class OrderCreationAPI(AbstractAPI):
                 subject = product.title
 
                 order = Order(total_fee=total_fee, channel=channel,machine_id = machine_id)
-                order.products.add(product)
                 order.save()
+                order.products.add = product
                 tn = order.id
                 data=alipay.api_alipay_trade_precreate(subject=subject,out_trade_no=tn,total_amount=total_fee)
                 return data
@@ -137,27 +137,12 @@ class OrderQueryAPI(AbstractAPI):
                 }
     def access_db(self, kwarg):
         order_id = kwarg['order_id']
+
         try:
             order = Order.objects.get(pk = order_id,is_payment = True)
-            product = order.product.get_json()
-            item_ids = product['items']
-            product['item_info'] = []
-            for j in item_ids:
-                item_detail = Item.objects.get(pk = j)
-                item_detail = item_detail.get_json()
-                item_detail.pop('update_time')
-                item_detail.pop('create_time')
-                item_detail.pop('is_active')
-                category_id = item_detail['category']
-                category = Category.objects.get(pk = category_id)
-                item_detail['category'] = category.title
-                product['item_info'].append(item_detail)
-            product.pop('create_time')
-            product.pop('update_time')
-            product.pop('is_active')
-            product.pop('items')
-            data = product
-            return data
+            order = order.get_json()
+
+            return order
         except Order.DoesNotExist:
             return None
     
