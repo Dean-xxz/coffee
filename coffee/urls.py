@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from accounts.apis import CodeView
 
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^ad/', include('ad.urls', namespace="ad")),   # 广告模块接口url
@@ -14,9 +15,9 @@ urlpatterns = [
     url(r'^code/', include('access_code.urls', namespace="code")),  # 取货模块接口url
     url(r'^machine/', include('machine.urls', namespace="machine")),  # 机器模块接口url
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),  # 用户模块接口url
-    url(r'^wechat/oauth/$', CodeView.as_view(), name="user_oauth_api"),
+    url(r'^wechat/oauth$', CodeView.as_view(), name="wechat_oauth_api"),
     url(r'^wechat/oauth/MP_verify_dEL3zvMhlfiUJgmt\.txt',TemplateView.as_view(template_name= 'MP_verify_dEL3zvMhlfiUJgmt.txt')),
-
+    url(r'',TemplateView.as_view(template_name="index.html"),name="index")
 
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

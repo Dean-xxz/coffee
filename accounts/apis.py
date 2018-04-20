@@ -1,19 +1,28 @@
 #__author__ = "Dean"
 #__email__ = "1220543004@qq.com"
 
+
 """
 此处提供众咖科技微信商城 支付模块所需公共api
+
 """
+import json
 import datetime
 from utils.view_tools import ok_json, fail_json,get_args
 from utils.abstract_api import AbstractAPI
-
+from django.http import HttpResponseRedirect,HttpResponse
+from django.shortcuts import render_to_response
+from urllib.request import urlopen
 from .models import Wechat_user,Invitation,Shopping_cart,Coffee_bank,Coupon_bank
 from product.models import Product,Item
 from access_code.models import Access_Code
 from payment.models import Order
 from coupon.admin import Coupon
 from django.views.generic import View
+from .js_utils import get_js_config
+from .oauth import get_access_token,get_userinfo
+from django.core.cache import cache
+from urllib import parse
 
 # 微信新用户注册
 class UserCreateAPI(AbstractAPI):
@@ -65,21 +74,16 @@ class UserCreateAPI(AbstractAPI):
 create_user_api = UserCreateAPI().wrap_func()
 
 
-#微信授权code换取openid
-class OpenidQueryAPI(AbstractAPI):
+#授权
+class OauthQueryAPI(AbstractAPI):
     def config_args(self):
         self.args = {
-            'code':'r',
         }
 
     def access_db(self, kwarg):
-        code = kwarg['code']
-        Appid = 'wx2ef73a7f200e1409'
-        AppSecret = 'acb9a3a794fa80effbd3e370f65f555f'
-        url = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"%(Appid,AppSecret,code)
-        res = urlopen(url).read().decode("utf8")
-        message = json.loads(res)
-        data = message
+        data = {
+            "oauth_link":'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxc59b077d6c26e6ff&redirect_uri=http%3a%2f%2fwww.zhongkakeji.com%2fwechat%2foauth&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect'
+        }
 
         return data
 
@@ -87,7 +91,52 @@ class OpenidQueryAPI(AbstractAPI):
         return ok_json(data = data)
 
 
-query_openid_api = OpenidQueryAPI().wrap_func()
+query_oauth_api = OauthQueryAPI().wrap_func()
+
+#用户信息查询接口
+class UserinfoQueryAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            "user_id":'r'
+        }
+
+    def access_db(self, kwarg):
+        user_id = kwarg['user_id']
+        try:
+            userinfo = Wechat_user.objects.get(pk=user_id)
+            userinfo = userinfo.get_json()
+            return userinfo
+        except Wechat_user.DoesNotExist:
+            return None
+
+    def format_data(self, data):
+        if data is not None:
+            return ok_json(data = data)
+        return fail_json('query faild')
+
+
+query_userinfo_api = UserinfoQueryAPI().wrap_func()
+
+#js_sdk config 调用config查询
+class ConfigQueryAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            "url":'r'
+        }
+
+    def access_db(self, kwarg):
+        url = kwarg['url']
+        url = parse.unquote(url)
+        data = get_js_config(url=url)
+        return data
+
+    def format_data(self, data):
+        return ok_json(data = data)
+
+
+query_config_api = ConfigQueryAPI().wrap_func()
+
+
 
 #添加购物车商品
 class CartCreateAPI(AbstractAPI):
@@ -329,29 +378,24 @@ class MyCouponCreateAPI(AbstractAPI):
     def config_args(self):
         self.args = {
             'user_id':'r',
-            'coupon_id':'r',
+            'coupon_ids':'r',
         }
 
     def access_db(self,kwarg):
         user_id = kwarg['user_id']
-        coupon_id = kwarg['coupon_id']
-
-        try:
+        coupon_ids = kwarg['coupon_ids']
+        coupon_ids=coupon_ids.replace(',','')
+        
+        for coupon_id in coupon_ids:
             coupon = Coupon.objects.get(pk = coupon_id)
             dead_line = coupon.dead_line
             try:
                 is_recived = Coupon_bank.objects.get(user_id = user_id,coupon_id = coupon_id,is_active = True)
-                return 'recive successful'
+                pass
             except Coupon_bank.DoesNotExist:
                 coupon_bank = Coupon_bank(user_id = user_id,coupon_id = coupon_id,dead_line = dead_line)
                 coupon_bank.save()
-                if coupon:
-                    data = 'recive successful'
-                    return data
-                return None
-        except Coupon.DoesNotExist:
-            return None
-
+        return 'recived successful'
 
     def format_data(self,data):
         if data is not None:
@@ -396,8 +440,38 @@ list_mycoupon_api = MyCouponListAPI().wrap_func()
 class CodeView(View):
 
     def get(self, request, *args, **kwargs):
-            #get password and username
         code = request.GET.get('code')
-        print (code)
-            #如果不成功，测取消订单
-        return None
+        if code:
+            data = get_access_token(code=code)
+            access_token = data['access_token']
+            openid = data['openid']
+            userinfo = get_userinfo(access_token=access_token,openid=openid)
+            nickname = userinfo['nickname']
+            openid = userinfo['openid']
+            try:
+                user = Wechat_user.objects.get(openid = openid)
+                data = user.get_json()
+                data['user_id'] = data['id']
+                user_id = user.id
+                print (user_id)
+                response = HttpResponseRedirect('/')
+                response.set_cookie('user_id',user_id)
+                return response
+            except Wechat_user.DoesNotExist:
+                sex = userinfo['sex']
+                language = userinfo['language']
+                city = userinfo['city']
+                province = userinfo['province']
+                country = userinfo['country']
+                headimgurl = userinfo['headimgurl']
+                wechat_user = Wechat_user(nickname=nickname,openid=openid,sex=sex,language=language,city=city,province=province,country=country,headimgurl=headimgurl)
+                wechat_user.save()
+                if wechat_user:
+                    user_id = wechat_user.id
+                    userinfo['user_id'] = user_id
+                    response = HttpResponseRedirect('/')
+                    response.set_cookie('user_id',user_id)
+                    return response
+        if not code:
+            response = HttpResponseRedirect('/')
+            return response

@@ -39,7 +39,7 @@ def build_sign(params):
         stringSignTemp = stringSignTemp.encode('utf-8')
     m = hashlib.md5(stringSignTemp)
     return m.hexdigest().upper()
-
+#    return m.hexdigest()
 
     #构建统一下单接口需要参数
 def build_unifiedorder(params):
@@ -85,7 +85,7 @@ def dict_to_xml(params):
     #调起支付
 def build_form_by_prepay_id(prepay_id):
     base_params = {
-        'appId': config['appId'],
+        'appId': config['appid'],
         'timeStamp': str(int(time.time())),
         'nonceStr': generate_random_string(),
         'package': "prepay_id=%s" % prepay_id,

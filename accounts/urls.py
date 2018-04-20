@@ -5,7 +5,9 @@ from .apis import CodeView
 urlpatterns = [
     url(r'^user/create/$', accounts.apis.create_user_api, name="user_create_api"),
     url(r'^oauth/$', accounts.apis.CodeView.as_view(), name="user_oauth_api"),
-    url(r'^openid/query/$', accounts.apis.query_openid_api, name="openid_query_api"),
+    url(r'^userinfo/query/$', accounts.apis.query_userinfo_api, name="userinfo_query_api"),
+    url(r'^config/query/$', accounts.apis.query_config_api, name="config_query_api"),
+    url(r'^oauth/query/$', accounts.apis.query_oauth_api, name="oauth_query_api"),
     url(r'^cart/create/$', accounts.apis.create_cart_api, name="cart_create_api"),
     url(r'^cart/delete/$', accounts.apis.delete_cart_api, name="cart_delete_api"),    
     url(r'^cart/list/$', accounts.apis.list_cart_api, name="cart_list_api"),

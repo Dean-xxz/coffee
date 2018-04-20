@@ -11,7 +11,7 @@ from utils.abstract_api import AbstractAPI
 from .models import Order
 from product.models import Product
 from .js_wechat_pay import build_form_by_params_js
-
+from accounts.models import Wechat_user
 
 # 创建订单接口
 class OrderCreationAPI(AbstractAPI):
@@ -19,16 +19,16 @@ class OrderCreationAPI(AbstractAPI):
         self.args = {
             'product_ids': 'r',
             'user_id':'r',
-            'openid':('o', None),
             'coupon_id':('o',None),
         }
 
     def access_db(self, kwarg):
         product_ids = kwarg['product_ids']
         product_ids=product_ids.replace(',','')
-        openid = kwarg['openid']
         user_id = kwarg['user_id']
         coupon_id = kwarg['coupon_id']
+        wechat_user = Wechat_user.objects.get(pk=user_id)
+        openid = wechat_user.openid
 
         order = Order(total_fee = 12,coupon_bank_id = coupon_id,user_id = user_id,channel = 'W')
         order.save()
@@ -40,7 +40,7 @@ class OrderCreationAPI(AbstractAPI):
         total_fee = 1
         body = 'test'
         out_trade_no = order.id
-        openid = 'oVXUA5RliLjrGqOis0eq17zksroo'
+        openid = openid
         params = build_form_by_params_js({
             'body': body,
             'out_trade_no': out_trade_no,
@@ -48,9 +48,11 @@ class OrderCreationAPI(AbstractAPI):
             'spbill_create_ip': '121.201.67.209',
             'openid':openid,
             })
-        data = json.dumps(params)
-        data = json.loads(data)
-        return data
+#        data = json.dumps(params)
+#        data = json.loads(data)
+        params['timestamp']=params['timeStamp']
+        params.pop('timeStamp')
+        return params
 
     def format_data(self, data):
         if data is not None:
