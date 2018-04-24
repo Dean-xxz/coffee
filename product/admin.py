@@ -20,7 +20,8 @@ admin.site.register(Item,ItemAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title','price','vip_price','order')
+    list_display = ('title','descp','price','vip_price','order')
+    list_filter = ('is_terminal','is_suit','is_hot',)
 
 
 admin.site.register(Product,ProductAdmin)

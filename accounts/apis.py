@@ -13,7 +13,7 @@ from utils.abstract_api import AbstractAPI
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from urllib.request import urlopen
-from .models import Wechat_user,Invitation,Shopping_cart,Coffee_bank,Coupon_bank
+from .models import Wechat_user,Invitation,Shopping_cart,Coupon_bank
 from product.models import Product,Item
 from access_code.models import Access_Code
 from payment.models import Order
@@ -273,7 +273,7 @@ class BankUpdateAPI(AbstractAPI):
 
         try:
             user = Wechat_user.objects.get(pk = user_id)
-            bank = Coffee_bank.objects.filter(access_code_id = code_id).update(user_id = user_id)
+            bank = Access_Code.objects.filter(pk  = code_id).update(user_id = user_id)
             return 'update coffee_bank success'
         except Wechat_user.DoesNotExist:
             return None
@@ -296,17 +296,14 @@ class BankListAPI(AbstractAPI):
     def access_db(self,kwarg):
         user_id = kwarg['user_id']
 
-        bank = Coffee_bank.objects.filter(user_id = user_id,is_active = True)
+        bank = Access_Code.objects.filter(user_id = user_id,is_active = True)
         bank = [o.get_json() for o in bank]
 
         for i in bank:
             i.pop('create_time')
             i.pop('update_time')
             i.pop('is_active')
-            code_id = i['access_code']
-            code = Access_Code.objects.get(pk = code_id)
-            code = code.get_json()
-            item_id = code['item']
+            item_id = i['item']
             item = Item.objects.get(pk = item_id)
             item = item.get_json()
             i['item_info'] = item

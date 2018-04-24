@@ -4,7 +4,6 @@ from utils.basemodel.base import BaseModel
 from django.core import serializers
 from django.conf import settings
 from product.models import Product
-from access_code.models import Access_Code
 from coupon.models import Coupon
 # Create your models here.
 
@@ -82,26 +81,26 @@ class Shopping_cart(BaseModel):
         return data
 
 
-class Coffee_bank(BaseModel):
+#class Coffee_bank(BaseModel):
     """
     咖啡库
     """
-    class Meta:
-        verbose_name = "咖啡库"
-        verbose_name_plural = "咖啡库"
-        ordering = ["-create_time",]
+#    class Meta:
+#        verbose_name = "咖啡库"
+#        verbose_name_plural = "咖啡库"
+#        ordering = ["-create_time",]
 
-    user = models.ForeignKey("Wechat_user",verbose_name="用户",related_name="coupon_user")
-    access_code = models.ForeignKey("access_code.Access_Code",verbose_name="提货码",related_name="bank_code")
+#    user = models.ForeignKey("Wechat_user",verbose_name="用户",related_name="coupon_user")
+#    access_code = models.ForeignKey("access_code.Access_Code",verbose_name="提货码",related_name="bank_code")
 
 
-    def get_json(self):
-        serials = serializers.serialize("json", [self])
-        struct = json.loads(serials)
-        data = struct[0]['fields']
-        if 'pk' in struct[0]:
-            data['id'] = struct[0]['pk']
-        return data
+#    def get_json(self):
+#        serials = serializers.serialize("json", [self])
+#        struct = json.loads(serials)
+#        data = struct[0]['fields']
+#        if 'pk' in struct[0]:
+#            data['id'] = struct[0]['pk']
+#        return data
 
 
 class Coupon_bank(BaseModel):

@@ -14,6 +14,7 @@ from machine.models import Machine
 from product.models import Product,Item,Category
 from .wx_pay_utils import build_form_by_params,notify_xml_string_to_dict,notify_success_xml,verify_notify_string
 from .pay_settings import ALI_PAY_CONFIG
+from access_code.utils import get_access_code
 
 config = ALI_PAY_CONFIG
 
@@ -118,13 +119,23 @@ class NotifyView(View):
 
 def payment_wxnotify_view(request):
     if verify_notify_string(request.body) is True:
-    	notify = notify_xml_string_to_dict(request.body)
-    	order_id = notify['out_trade_no']
-    	order = Order.objects.filter(id = order_id).update(is_payment=True)
-    	return HttpResponse(
-        	        notify_success_xml(),
-                	content_type='application/xml',
-                     )
+        notify = notify_xml_string_to_dict(request.body)
+        order_id = notify['out_trade_no']
+        order = Order.objects.filter(id = order_id).update(is_payment=True)
+        order = Order.objects.get(pk=order_id)
+        order = order.get_json()
+        products = order['products']
+        user_id = order['user']
+        for product in products:
+            product = Product.objects.get(pk=product)
+            product = product.get_json()
+            items = product['items']
+            for j in items:
+                data = get_access_code(user_id=user_id,item_id = j)
+        return HttpResponse(
+                        notify_success_xml(),
+                        content_type='application/xml',
+                       )
     return fail_json()	
 
 

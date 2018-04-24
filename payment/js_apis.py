@@ -30,7 +30,7 @@ class OrderCreationAPI(AbstractAPI):
         wechat_user = Wechat_user.objects.get(pk=user_id)
         openid = wechat_user.openid
 
-        order = Order(total_fee = 12,coupon_bank_id = coupon_id,user_id = user_id,channel = 'W')
+        order = Order(total_fee = 12,coupon_bank_id = coupon_id,user_id = user_id,channel = 'W',scene = '2')
         order.save()
         for i in product_ids:
             product = Product.objects.get(pk=i)

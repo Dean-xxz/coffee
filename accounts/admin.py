@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Wechat_user,Invitation,Shopping_cart,Coffee_bank,Coupon_bank
+from .models import Wechat_user,Invitation,Shopping_cart,Coupon_bank
 
 # Register your models here.
 
@@ -16,10 +16,10 @@ class Shopping_cartAdmin(admin.ModelAdmin):
 
 admin.site.register(Shopping_cart,Shopping_cartAdmin)
 
-class Coffee_bankAdmin(admin.ModelAdmin):
-    list_display = ('user','access_code','is_active')
+#class Coffee_bankAdmin(admin.ModelAdmin):
+#    list_display = ('user','access_code','is_active')
 
-admin.site.register(Coffee_bank,Coffee_bankAdmin)
+#admin.site.register(Coffee_bank,Coffee_bankAdmin)
 
 
 class Coupon_bankAdmin(admin.ModelAdmin):
