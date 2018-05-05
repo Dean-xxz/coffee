@@ -102,3 +102,28 @@ class CodeUpdateAPI(AbstractAPI):
         return fail_json('code is error')
 
 update_code_api = CodeUpdateAPI().wrap_func()
+
+class CodeinfoQueryAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            'code':'r',
+        }
+
+    def access_db(self, kwarg):
+        code = kwarg['code']
+
+        code = Access_Code.objects.get(code=code)
+        item_id = code.item.id
+        code_info = Item.objects.get(pk=item_id)
+        code_info = code_info.get_json()
+        code_info.pop('create_time')
+        code_info.pop('update_time')
+        code_info.pop('is_active')
+        return code_info
+
+    def format_data(self, data):
+        if data is not None:
+            return ok_json(data = data)
+        return fail_json('code is error')
+
+query_codeinfo_api = CodeinfoQueryAPI().wrap_func()

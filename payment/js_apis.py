@@ -12,6 +12,7 @@ from .models import Order
 from product.models import Product
 from .js_wechat_pay import build_form_by_params_js
 from accounts.models import Wechat_user
+from accounts.models import Coupon_bank
 
 # 创建订单接口
 class OrderCreationAPI(AbstractAPI):
@@ -19,18 +20,24 @@ class OrderCreationAPI(AbstractAPI):
         self.args = {
             'product_ids': 'r',
             'user_id':'r',
-            'coupon_id':('o',None),
+            'coupon_bank_id':('o',None),
+            'total_fee':('o',None),
         }
 
     def access_db(self, kwarg):
         product_ids = kwarg['product_ids']
         product_ids=product_ids.replace(',','')
         user_id = kwarg['user_id']
-        coupon_id = kwarg['coupon_id']
+        coupon_id = kwarg['coupon_bank_id']
         wechat_user = Wechat_user.objects.get(pk=user_id)
         openid = wechat_user.openid
+        total_fee = kwarg['total_fee']
+        print (total_fee)
+#        if coupon_id:
+            #将优惠券状态更新为已使用
+#            update_coupon_status = Coupon_bank.objects.filter(pk = coupon_id).update(is_active=False)
 
-        order = Order(total_fee = 12,coupon_bank_id = coupon_id,user_id = user_id,channel = 'W',scene = '2')
+        order = Order(total_fee = total_fee,user_id = user_id,channel = 'W',scene = '2')
         order.save()
         for i in product_ids:
             product = Product.objects.get(pk=i)

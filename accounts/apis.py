@@ -20,6 +20,7 @@ from payment.models import Order
 from coupon.admin import Coupon
 from django.views.generic import View
 from .js_utils import get_js_config
+from access_code.utils import get_first_access_code
 from .oauth import get_access_token,get_userinfo
 from django.core.cache import cache
 from urllib import parse
@@ -273,7 +274,7 @@ class BankUpdateAPI(AbstractAPI):
 
         try:
             user = Wechat_user.objects.get(pk = user_id)
-            bank = Access_Code.objects.filter(pk  = code_id).update(user_id = user_id)
+            bank = Access_Code.objects.filter(code  = code_id).update(user_id = user_id)
             return 'update coffee_bank success'
         except Wechat_user.DoesNotExist:
             return None
@@ -362,7 +363,7 @@ class CouponListAPI(AbstractAPI):
             i.pop('create_time')
             i.pop('update_time')
             i.pop('is_active')
-        return coupon
+        return None
 
 
     def format_data(self,data):
@@ -466,6 +467,7 @@ class CodeView(View):
                 if wechat_user:
                     user_id = wechat_user.id
                     userinfo['user_id'] = user_id
+                    create_send_coffee = get_first_access_code(user_id=user_id,item_id=1)
                     response = HttpResponseRedirect('/')
                     response.set_cookie('user_id',user_id)
                     return response

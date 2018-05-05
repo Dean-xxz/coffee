@@ -15,6 +15,7 @@ class Access_Code(BaseModel):
     item = models.ForeignKey("product.Item",verbose_name="商品条目",related_name="code_item")
     user = models.ForeignKey("accounts.Wechat_user", related_name="access_code_user",null=True,blank=True)
     code = models.CharField(max_length=6,verbose_name="提货码")
+    is_send = models.BooleanField(verbose_name="是否允许赠送",default=True)
     status = models.BooleanField(verbose_name="是否使用",default=False)
 
 

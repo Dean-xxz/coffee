@@ -113,8 +113,14 @@ class Coupon_bank(BaseModel):
         ordering = ["-create_time",]
 
     user = models.ForeignKey("Wechat_user",verbose_name="用户",related_name="bank_user")
+    descp = models.CharField(max_length = 128,verbose_name="描述",null=True,blank=True)
+    share_user = models.ForeignKey("Wechat_user",verbose_name="分享者",related_name="bank_share_user",null=True,blank=True)
     coupon = models.ForeignKey("coupon.Coupon",verbose_name="优惠券",related_name="bank_coupon")
     dead_line = models.DateTimeField(blank=True,null=True,verbose_name="优惠截止日期")
+
+    def __str__(self):
+        return self.descp
+ 
 
     def get_json(self):
         serials = serializers.serialize("json", [self])
