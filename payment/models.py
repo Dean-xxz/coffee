@@ -23,7 +23,7 @@ class Order(BaseModel):
         )
 
     user = models.ForeignKey('accounts.Wechat_user',verbose_name = "用户",related_name = "order_user",null=True,blank=True)
-    coupon_bank = models.ForeignKey('accounts.Coupon_bank',verbose_name = "优惠券",related_name = "order_bank",null=True,blank=True)
+    coupon_id = models.IntegerField(verbose_name = "优惠券id",null=True,blank=True)
     products = models.ManyToManyField("product.Product",verbose_name = "产品",related_name = "order_product",null=True,blank=True)
     machine = models.ForeignKey('machine.Machine',verbose_name = "销售机器",related_name = "order_machine",null=True,blank=True)
     total_fee = models.DecimalField(max_digits = 10,decimal_places = 2,verbose_name="总价")

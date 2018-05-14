@@ -28,6 +28,8 @@ class ProductListAPI(AbstractAPI):
         for i in data:
             item_ids = i['items']
             i['item_info'] = []
+            if int(i['vip_price']) == 0:
+                i['vip_price'] = None
             for j in item_ids:
                 item_detail = Item.objects.get(pk=j)
                 item_detail = item_detail.get_json()

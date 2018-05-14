@@ -25,20 +25,22 @@ class CouponbankCreateAPI(AbstractAPI):
         self.args = {
             "user_id":'r',
             "share_user_id":'r',
+            "timestamp":'r',
         }
 
     def access_db(self, kwarg):
         user_id = kwarg['user_id']
         share_user_id = kwarg['share_user_id']
+        timestamp = kwarg['timestamp']
         
-        count = Coupon_bank.objects.filter(share_user_id = share_user_id).count()
+        count = Coupon_bank.objects.filter(share_user_id = share_user_id,timestamp = timestamp).count()
         if count > 10:
             return None
         coupon = Coupon.objects.filter().order_by('?')[:1]
         data = [o.get_json() for o in coupon]
         coupon_id = data[0]['id']
         deadline = data[0]['dead_line']
-        couponbank = Coupon_bank(share_user_id=share_user_id,user_id=user_id,coupon_id=coupon_id,dead_line=deadline)
+        couponbank = Coupon_bank(share_user_id=share_user_id,user_id=user_id,coupon_id=coupon_id,timestamp = timestamp,dead_line=deadline)
         couponbank.save()
         if couponbank:
             data = {}
@@ -64,12 +66,14 @@ class CouponbankListAPI(AbstractAPI):
     def config_args(self):
         self.args = {
             "share_user_id":'r',
+            "timestamp":'r',
         }
 
     def access_db(self, kwarg):
         share_user_id = kwarg['share_user_id']
+        timestamp = kwarg['timestamp']
 
-        coupon = Coupon_bank.objects.filter(share_user_id = share_user_id)
+        coupon = Coupon_bank.objects.filter(share_user_id = share_user_id,timestamp = timestamp)
         data = [o.get_json() for o in coupon]
         for i in data:
             share_user_id = i['share_user']

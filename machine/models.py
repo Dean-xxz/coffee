@@ -16,6 +16,7 @@ class Channel(BaseModel):
     password = models.CharField(max_length=24,verbose_name="商户登录密码",null=True,blank=True)
     mobile = models.CharField(max_length=12,verbose_name="服务热线",null=True,blank=True)
     remarks = models.TextField(verbose_name="渠道简介",null=True,blank=True,help_text="请输入商户简介")
+    is_superuser = models.BooleanField(verbose_name="是否为超级管理员",default=False)
 
 
     class Meta:
@@ -60,7 +61,6 @@ class Machine(BaseModel):
     error_state = models.CharField(max_length=1,verbose_name="故障状态",default=1,choices=ERROR_CHOICES)
     material_state = models.CharField(max_length=1,verbose_name="物料状态",default=1,choices=MATERIAL_CHOICES)
 
-
     class Meta:
         verbose_name = "机器信息"
         verbose_name_plural = "机器信息"
@@ -84,10 +84,8 @@ class Machine_state(BaseModel):
     机器日志状态表，记录机器日志
     """
     machine = models.ForeignKey("Machine",related_name="machine_state",verbose_name="机器")
-    state_id = models.IntegerField(verbose_name="状态id",null=True,blank=True)
-    code = models.CharField(max_length=32,verbose_name="状态码")
     descp = models.CharField(max_length=128,verbose_name="状态描述")
-    is_cannel = models.BooleanField(verbose_name="是否清楚",default=False)
+    is_cannel = models.BooleanField(verbose_name="是否清除",default=False)
 
     class Meta:
         verbose_name = "机器状态"

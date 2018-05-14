@@ -15,6 +15,7 @@ from product.models import Product,Item,Category
 from .wx_pay_utils import build_form_by_params,notify_xml_string_to_dict,notify_success_xml,verify_notify_string
 from .pay_settings import ALI_PAY_CONFIG
 from access_code.utils import get_access_code
+from accounts.models import Coupon_bank
 
 config = ALI_PAY_CONFIG
 
@@ -124,6 +125,8 @@ def payment_wxnotify_view(request):
         order = Order.objects.filter(id = order_id).update(is_payment=True)
         order = Order.objects.get(pk=order_id)
         order = order.get_json()
+        coupon_id = order['coupon_id']
+        update_coupon_status = Coupon_bank.objects.filter(pk = coupon_id).update(is_active=False)
         products = order['products']
         user_id = order['user']
         for product in products:

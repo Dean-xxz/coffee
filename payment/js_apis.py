@@ -26,18 +26,19 @@ class OrderCreationAPI(AbstractAPI):
 
     def access_db(self, kwarg):
         product_ids = kwarg['product_ids']
-        product_ids=product_ids.replace(',','')
+        product_ids = kwarg['product_ids']
+        product_ids = product_ids.split(',')
+        for i in product_ids:
+            print (i)
+#        if ',' in product_ids:
+#        product_ids.remove(',')
         user_id = kwarg['user_id']
         coupon_id = kwarg['coupon_bank_id']
         wechat_user = Wechat_user.objects.get(pk=user_id)
         openid = wechat_user.openid
         total_fee = kwarg['total_fee']
-        print (total_fee)
-#        if coupon_id:
-            #将优惠券状态更新为已使用
-#            update_coupon_status = Coupon_bank.objects.filter(pk = coupon_id).update(is_active=False)
 
-        order = Order(total_fee = total_fee,user_id = user_id,channel = 'W',scene = '2')
+        order = Order(total_fee = total_fee,coupon_id = coupon_id,user_id = user_id,channel = 'W',scene = '2')
         order.save()
         for i in product_ids:
             product = Product.objects.get(pk=i)
@@ -55,8 +56,6 @@ class OrderCreationAPI(AbstractAPI):
             'spbill_create_ip': '121.201.67.209',
             'openid':openid,
             })
-#        data = json.dumps(params)
-#        data = json.loads(data)
         params['timestamp']=params['timeStamp']
         params.pop('timeStamp')
         return params
