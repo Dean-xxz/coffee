@@ -130,3 +130,32 @@ class Coupon_bank(BaseModel):
         if 'pk' in struct[0]:
             data['id'] = struct[0]['pk']
         return data
+
+
+
+class Notice(BaseModel):
+    """
+    系统通知
+    """
+    class Meta:
+        verbose_name = "系统通知"
+        verbose_name_plural = "系统通知"
+        ordering = ['-create_time']
+
+    user = models.ForeignKey('Wechat_user',verbose_name="用户",related_name="notice_user")
+    text = models.CharField(max_length = 1024,verbose_name = "通知内容")
+    is_read = models.BooleanField(verbose_name = "是否已读",default = False)
+    
+    def __str__(self):
+        return self.text
+
+    def get_json(self):
+        serials = serializers.serialize("json", [self])
+        struct = json.loads(serials)
+        data = struct[0]['fields']
+        if 'pk' in struct[0]:
+            data['id'] = struct[0]['pk']
+        return data
+
+
+

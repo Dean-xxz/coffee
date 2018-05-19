@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Wechat_user,Invitation,Shopping_cart,Coupon_bank
+from .models import Wechat_user,Invitation,Shopping_cart,Coupon_bank,Notice
 
 # Register your models here.
 
@@ -27,3 +27,9 @@ class Coupon_bankAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Coupon_bank,Coupon_bankAdmin)
+
+class NoticeAdmin(admin.ModelAdmin):
+    list_display = ('user','text','is_read')
+    list_filter = ('is_read',)
+
+admin.site.register(Notice,NoticeAdmin)

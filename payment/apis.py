@@ -55,7 +55,7 @@ class OrderCreationAPI(AbstractAPI):
         if channel == 'W':
             try:
                 product = Product.objects.get(pk = product_id)
-                total_fee = int(product.vip_price)
+                total_fee = int(product.price)
                 body = product.title
 
                 order = Order(total_fee = total_fee,channel = channel,machine_id = machine_id)

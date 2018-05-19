@@ -10,7 +10,7 @@ from utils.abstract_api import AbstractAPI
 
 from .models import Channel,Machine,Machine_state,Material_state
 from formula.models import Container
-
+from .utils import update_material
 # 机器注册接口
 
 class MachineCreateAPI(AbstractAPI):
@@ -164,10 +164,12 @@ class MaterialUpdateAPI(AbstractAPI):
             try:
                 material = Material_state.objects.get(machine_id = machine_id,containerid = containerid)
                 material = Material_state.objects.filter(machine_id = machine_id,containerid = containerid).update(margin = margin)
+                update_status = update_material(machine_id = machine_id)
                 return 'create or update successful'
             except Material_state.DoesNotExist:
                 material_state = Material_state(machine_id = machine_id,containerid = containerid,container_id = container_id,margin = margin)
                 material_state.save()
+                update_status = update_material(machine_id = machine_id)
                 return 'create or update successful'
 
 

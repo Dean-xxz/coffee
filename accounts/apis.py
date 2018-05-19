@@ -13,7 +13,7 @@ from utils.abstract_api import AbstractAPI
 from django.http import HttpResponseRedirect,HttpResponse
 from django.shortcuts import render_to_response
 from urllib.request import urlopen
-from .models import Wechat_user,Invitation,Shopping_cart,Coupon_bank
+from .models import Wechat_user,Invitation,Shopping_cart,Coupon_bank,Notice
 from product.models import Product,Item
 from access_code.models import Access_Code
 from payment.models import Order
@@ -274,8 +274,15 @@ class BankUpdateAPI(AbstractAPI):
 
         try:
             user = Wechat_user.objects.get(pk = user_id)
+            username = user.nickname
+            old_bank = Access_Code.objects.get(code = code_id)
+            old_user_id = old_bank.user_id
+            text = '您赠送给%s的礼物已被领取'%(username)
+            notice = Notice(user_id = old_user_id,text = text)
+            notice.save()
             bank = Access_Code.objects.filter(code  = code_id).update(user_id = user_id)
             return 'update coffee_bank success'
+            
         except Wechat_user.DoesNotExist:
             return None
 
@@ -474,3 +481,49 @@ class CodeView(View):
         if not code:
             response = HttpResponseRedirect('/')
             return response
+
+
+
+#系统消息查询接口
+class NoticeListAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            "user_id":'r',
+        }
+
+    def access_db(self,kwarg):
+        user_id = kwarg['user_id']
+        notice = Notice.objects.filter(user_id = user_id,is_read = False)
+        notice = [o.get_json() for o in notice]
+        for i in notice:
+            i.pop('create_time')
+            i.pop('update_time')
+            i.pop('is_active')
+            i['notice_id'] = i['id']
+            i.pop('id')
+        return notice
+
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+list_notice_api = NoticeListAPI().wrap_func()
+
+#系统消息已读状态更新
+class NoticeUpdateAPI(AbstractAPI):
+    def config_args(self):
+        self.args = {
+            "notice_id":'r',
+        }
+
+    def access_db(self,kwarg):
+        notice_id = kwarg['notice_id']
+        notice = Notice.objects.filter(pk = notice_id).update(is_read = True)
+        return 'update successful'
+
+
+    def format_data(self,data):
+        return ok_json(data=data)
+
+update_notice_api = NoticeUpdateAPI().wrap_func()
+

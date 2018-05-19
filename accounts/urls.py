@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^coupon/list/$', accounts.apis.list_coupon_api, name="coupon_list_api"),
     url(r'^mycoupon/create/$', accounts.apis.create_mycoupon_api, name="mycoupon_create_api"),
     url(r'^mycoupon/list/$', accounts.apis.list_mycoupon_api, name="mycoupon_list_api"),
+    url(r'^notice/list/$', accounts.apis.list_notice_api, name="notice_list_api"),
+    url(r'^notice/update/$', accounts.apis.update_notice_api, name="notice_update_api"),
 
 ]
 
